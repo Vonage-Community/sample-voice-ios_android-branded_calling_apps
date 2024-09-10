@@ -27,3 +27,8 @@ Note: Run it on real device, as the simulator might not works for callkit and/or
 1. Open Android folder in Android Studio
 1. Go to utils/Constants.kt file, and paste your backend server url to `BACKEND_URL`.
 1. Run the project
+
+## Login the App:
+1. Fill in the phone number in E.164 Format without the (+) sign
+1. Click the "Sign Up" button if the user has never been created
+1. Click the "Login" button if the user has been been created
