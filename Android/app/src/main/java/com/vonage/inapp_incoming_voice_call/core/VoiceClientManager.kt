@@ -10,7 +10,6 @@ import android.telecom.DisconnectCause
 import android.telecom.TelecomManager
 import com.google.firebase.messaging.RemoteMessage
 import com.vonage.android_core.PushType
-import com.vonage.android_core.VGClientConfig
 import com.vonage.clientcore.core.api.*
 import com.vonage.clientcore.core.conversation.VoiceChannelType
 import com.vonage.inapp_incoming_voice_call.telecom.CallConnection
@@ -45,9 +44,7 @@ class VoiceClientManager(private val context: Context) {
 
     private fun initClient(){
         setDefaultLoggingLevel(LoggingLevel.Info)
-        val config = VGClientConfig(ClientConfigRegion.AP)
         client = VoiceClient(context)
-        client.setConfig(config)
     }
 
     private fun setClientListeners(){

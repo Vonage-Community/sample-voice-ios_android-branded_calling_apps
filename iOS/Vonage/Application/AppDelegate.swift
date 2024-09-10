@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Vonage Client is a stateful object and idelly should be initialised once
         // and shared between controllers
-        let config = VGClientInitConfig(loggingLevel: .info, region: .AP)
+        let config = VGClientInitConfig(loggingLevel: .info)
         let vonageClient = VGVoiceClient(config)
         VGVoiceClient.isUsingCallKit = true
         
