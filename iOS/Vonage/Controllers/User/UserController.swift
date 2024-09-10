@@ -42,7 +42,7 @@ class UserController: NSObject {
               
               // refresh token
           NetworkController()
-              .sendGetCredentialRequest(apiType: CodeLoginAPI(body: LoginRequest(username: username)))
+            .sendGetTokenRequest(apiType: GetTokenAPI(body: LoginRequest(username: username)))
               .sink { completion in
                   if case .failure(let error) = completion {
                       print(error)

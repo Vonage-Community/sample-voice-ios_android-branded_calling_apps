@@ -33,6 +33,7 @@
 		EA13FA9C2ADF7E7C00E4D712 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA13FA9B2ADF7E7C00E4D712 /* BaseViewController.swift */; };
 		EA4353822B3421DB0051DE0B /* SpinnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA4353812B3421DB0051DE0B /* SpinnerViewController.swift */; };
 		EA551E3E2B31A89A000AF3E0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA551E3D2B31A89A000AF3E0 /* Intents.framework */; };
+		EADF09E92C901C7000A82ABC /* Brand.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADF09E82C901C7000A82ABC /* Brand.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -73,6 +74,7 @@
 		EA13FA9B2ADF7E7C00E4D712 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		EA4353812B3421DB0051DE0B /* SpinnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerViewController.swift; sourceTree = "<group>"; };
 		EA551E3D2B31A89A000AF3E0 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
+		EADF09E82C901C7000A82ABC /* Brand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Brand.swift; sourceTree = "<group>"; };
 		EAF4DBBB2B70C62200F6A3B9 /* iOSDropDown.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = iOSDropDown.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F193BCBF31197A699E0E5355 /* Pods-Vonage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vonage.debug.xcconfig"; path = "Target Support Files/Pods-Vonage/Pods-Vonage.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -121,6 +123,7 @@
 				D121593229998536001BB563 /* Call.swift */,
 				D121593829998FE6001BB563 /* User.swift */,
 				D121593C2999A2A6001BB563 /* Connection.swift */,
+				EADF09E82C901C7000A82ABC /* Brand.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -406,6 +409,7 @@
 				D1521C4A299DA37B00E7D572 /* CallController+CXProviderDelegate.swift in Sources */,
 				D1F2438A2981902900C49B3F /* UserController.swift in Sources */,
 				D121593D2999A2A6001BB563 /* Connection.swift in Sources */,
+				EADF09E92C901C7000A82ABC /* Brand.swift in Sources */,
 				D1521C46299C396800E7D572 /* DialerView.swift in Sources */,
 				D1F24388298187C600C49B3F /* LoginViewController.swift in Sources */,
 				EA13FA9C2ADF7E7C00E4D712 /* BaseViewController.swift in Sources */,

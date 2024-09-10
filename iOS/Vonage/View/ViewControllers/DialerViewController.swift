@@ -44,6 +44,13 @@ class DialerViewController: UIViewController {
     
     var userController: UserController?
     
+    var dropDownButton: UIButton!
+    var dropDownList: UIStackView!
+    var dropDownChildren: [UIMenuElement] = []
+    var brandLabel: UILabel!
+    var brands: [Brand] = []
+
+    var cancellables = Set<AnyCancellable>()
     
     override func loadView() {
         super.loadView()
@@ -90,13 +97,33 @@ class DialerViewController: UIViewController {
             vonageLogoImageView.heightAnchor.constraint(equalToConstant: 200),
         ]
         
-        self.viewModel?.callee = "contact center"
+        brandLabel = UILabel()
+        brandLabel.font = .systemFont(ofSize: 14)
+        brandLabel.text = "Brand:"
+
+        dropDownList = UIStackView()
+        dropDownList.axis = .vertical
+        dropDownList.distribution = .fill
+        dropDownList.alignment = .fill
+        dropDownList.spacing = 5
+        dropDownList.translatesAutoresizingMaskIntoConstraints = false
+
+        let callCC = UIStackView()
+        callCC.axis = .vertical
+        callCC.distribution = .fill
+        callCC.alignment = .fill
+        callCC.spacing = 30
+        callCC.translatesAutoresizingMaskIntoConstraints = false
+
         callButton = UIButton()
         callButton.translatesAutoresizingMaskIntoConstraints = false
         callButton.setTitle("Call", for: .normal)
         callButton.tintColor = .green
         callButton.addTarget(self, action: #selector(callButtonPressed), for: .touchUpInside)
-        
+
+        callCC.addArrangedSubview(dropDownList)
+        callCC.addArrangedSubview(callButton)
+
         // MARK: RootView
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -109,16 +136,33 @@ class DialerViewController: UIViewController {
         stackView.addArrangedSubview(userName)
         stackView.addArrangedSubview(UIView()) // spacer
         stackView.addArrangedSubview(vonageLogoImageView)
-        stackView.addArrangedSubview(callButton)
+        stackView.addArrangedSubview(callCC)
         view.addSubview(stackView)
 
         NSLayoutConstraint.activate(onlineIconConstraints + vonageLogoImageViewConstraints + [
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.75),
-            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
+            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            stackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -100)
         ])
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if (brands.count == 0) {
+            NetworkController()
+                .sendGetBrandsRequest(apiType: CodeBrandAPI())
+                .receive(on: RunLoop.main)
+                .sink { completion in
+                    if case .failure(let error) = completion {
+                        print(error)
+                    }
+                } receiveValue: { (response: [Brand]) in
+                    self.brands = response
+                    self.reloadBrandsDropdown()
+                }.store(in: &cancellables)
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -150,7 +194,37 @@ class DialerViewController: UIViewController {
         .store(in: &cancels)
     }
     
+    private func reloadBrandsDropdown() {
+        // Drop Down List
+        dropDownButton = UIButton(primaryAction: nil)
+        dropDownButton.setTitleColor(.black, for: .normal)
+        dropDownButton.layer.borderColor = CGColor(red: 0.53, green: 0.53, blue: 0.53, alpha: 1.0)
+        dropDownButton.layer.borderWidth = 1
+        dropDownButton.layer.cornerRadius = 4
+        dropDownButton.height(constant: 48)
+        dropDownButton.titleLabel?.font = .systemFont(ofSize: 20)
+
+        self.viewModel?.callee = brands.count > 0 ? brands[0].brand : ""
+        for brand in brands {
+            dropDownChildren.append(UIAction(title: brand.brand, handler: { (action: UIAction) in
+                self.viewModel?.callee = action.title
+            }))
+        }
+
+        dropDownButton.translatesAutoresizingMaskIntoConstraints = false
+        dropDownButton.menu = UIMenu(options: .displayInline, children: dropDownChildren)
+        dropDownButton.showsMenuAsPrimaryAction = true
+        dropDownButton.changesSelectionAsPrimaryAction = true
+
+        dropDownList.addArrangedSubview(UIView()) // Spacer
+        dropDownList.addArrangedSubview(brandLabel)
+        dropDownList.addArrangedSubview(dropDownButton)
+    }
+
     @objc func callButtonPressed(_ sender:UIButton) {
+        if (viewModel?.callee == "" ) {
+            return
+        }
         viewModel?.createOutboundCall()
     }
 }

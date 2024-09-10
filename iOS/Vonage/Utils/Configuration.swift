@@ -10,18 +10,26 @@ private var backendServer = ""
 
 enum Configuration {
 
-    static func getLoginUrl() -> URL {
+    static func signupUrl() -> URL {
         let urlString = "\(backendServer)/user"
         guard let url = URL(string: urlString) else {
-            fatalError("Missing Login URL");
+            fatalError("Missing Sign Up URL");
         }
         return url
     }
 
-    static func getRefreshTokenUrl() -> URL {
-        let urlString = "\(backendServer)/user"
+    static func getTokenUrl() -> URL {
+        let urlString = "\(backendServer)/token"
         guard let url = URL(string: urlString) else {
-            fatalError("Missing Refresh Token URL");
+            fatalError("Missing Get Token URL");
+        }
+        return url
+    }
+
+    static func getBrandsUrl() -> URL {
+        let urlString = "\(backendServer)/brands"
+        guard let url = URL(string: urlString) else {
+            fatalError("Missing Get Brands URL");
         }
         return url
     }

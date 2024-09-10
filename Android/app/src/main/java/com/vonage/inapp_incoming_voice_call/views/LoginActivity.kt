@@ -72,7 +72,18 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             login(phoneNumber)
-      }
+        }
+
+        binding.btSignUp.setOnClickListener {
+            val phoneNumber = binding.etPhoneNumber.text.toString()
+
+            if ( phoneNumber == "") {
+                showToast(this, "Missing/Wrong User Information")
+
+                return@setOnClickListener
+            }
+            login(phoneNumber, true)
+        }
     }
 
     override fun onResume() {
@@ -86,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
             login(coreContext.user!!.name)
         }
     }
-    private fun login(phoneNumber: String) {
+    private fun login(phoneNumber: String, newUser: Boolean = false) {
         binding.btLogin.isEnabled = false
         // Loading spinner
         binding.pbLogin.visibility = View.VISIBLE
@@ -94,7 +105,12 @@ class LoginActivity : AppCompatActivity() {
 
         binding.etPhoneNumber.clearFocus()
 
-        APIRetrofit.instance.getCredential(LoginInformation(phoneNumber)).enqueue(object: Callback<User> {
+        var apiRetro = APIRetrofit.instance.getToken(phoneNumber)
+        if (newUser) {
+            apiRetro = APIRetrofit.instance.getCredential(LoginInformation(phoneNumber))
+        }
+
+        apiRetro.enqueue(object: Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 if (response.isSuccessful) {
                     response.body()?.let { it1 ->

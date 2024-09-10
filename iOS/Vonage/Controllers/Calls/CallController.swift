@@ -162,7 +162,6 @@ extension VonageCallController: CallController {
         vonageSession.compactMap {$0}.first().sink { _ in
             let deviceId = UserDefaults.standard.string(forKey: "DEVICE_ID")
             if (deviceId == nil) {
-                print("iujie123 register push token ", deviceId)
                 self.client.registerVoipToken(t.voip, isSandbox: true) { err,device in
                     UserDefaults.standard.set(device, forKey: "DEVICE_ID")
                 }

@@ -21,23 +21,32 @@ class LoginViewModel {
         }
     }
     
-    func login(phoneNumber: String) {
-        loginViaServer(phoneNumber: phoneNumber)
+    func login(phoneNumber: String, newuser: Bool = false) {
+        if (newuser) {
+            NetworkController()
+                .sendSignupRequest(apiType: SignupAPI(body: LoginRequest(username: phoneNumber)))
+                .sink { completion in
+                    if case .failure(let error) = completion {
+                        print(error)
+                        self.error = error
+                    }
+                } receiveValue: { (response: TokenResponse) in
+                    self.controller?.login(loginUser: User(username: phoneNumber, token: response.token))
+                }.store(in: &cancellables)
+        }
+        else {
+            NetworkController()
+                .sendGetTokenRequest(apiType: GetTokenAPI(body: LoginRequest(username: phoneNumber)))
+                .sink { completion in
+                    if case .failure(let error) = completion {
+                        print(error)
+                        self.error = error
+                    }
+                } receiveValue: { (response: TokenResponse) in
+                    self.controller?.login(loginUser: User(username: phoneNumber, token: response.token))
+                }.store(in: &cancellables)
+        }
     }
-
-    private func loginViaServer(phoneNumber: String) {
-        NetworkController()
-            .sendGetCredentialRequest(apiType: CodeLoginAPI(body: LoginRequest(username: phoneNumber)))
-            .sink { completion in
-                if case .failure(let error) = completion {
-                    print(error)
-                    self.error = error
-                }
-            } receiveValue: { (response: TokenResponse) in
-                self.controller?.login(loginUser: User(username: phoneNumber, token: response.token))
-            }.store(in: &cancellables)
-    }
-
     
     func bind(controller:UserController) {
         controller.user.compactMap{$0}.asResult().map { result in result.map { $0} }
@@ -52,7 +61,8 @@ class LoginViewController: BaseViewController {
     var phoneNumberLabel: UILabel!
     var phoneNumberInput: UITextField!
 
-    var submitButton: UIButton!
+    var loginButton: UIButton!
+    var signupButton: UIButton!
     
     var viewModel: LoginViewModel? {
         didSet(value) {
@@ -81,11 +91,17 @@ class LoginViewController: BaseViewController {
         phoneNumberInput.placeholder = "6512345678"
         phoneNumberInput.keyboardType = .numberPad
         
-        submitButton = UIButton()
-        submitButton.setTitle("Sign In", for: .normal)
-        submitButton.backgroundColor = UIColor.black
-        submitButton.addTarget(self, action: #selector(submitButtonPressed), for: .touchUpInside)
-        submitButton.isEnabled = true
+        loginButton = UIButton()
+        loginButton.setTitle("Login", for: .normal)
+        loginButton.backgroundColor = UIColor.black
+        loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
+        loginButton.isEnabled = true
+
+        signupButton = UIButton()
+        signupButton.setTitle("Sign Up", for: .normal)
+        signupButton.backgroundColor = UIColor.secondaryLabel
+        signupButton.addTarget(self, action: #selector(signupButtonPressed), for: .touchUpInside)
+        signupButton.isEnabled = true
         
         let formContainerView = UIStackView()
         formContainerView.translatesAutoresizingMaskIntoConstraints = false
@@ -98,7 +114,8 @@ class LoginViewController: BaseViewController {
         formContainerView.addArrangedSubview(loginLabel)
         formContainerView.addArrangedSubview(phoneNumberLabel)
         formContainerView.addArrangedSubview(phoneNumberInput)
-        formContainerView.addArrangedSubview(submitButton)
+        formContainerView.addArrangedSubview(loginButton)
+        formContainerView.addArrangedSubview(signupButton)
         formContainerView.addArrangedSubview(UIView())
 
         let formContainerParentView = UIView()
@@ -128,7 +145,8 @@ class LoginViewController: BaseViewController {
             loginLabel.heightAnchor.constraint(equalToConstant: 45.0),
             phoneNumberLabel.heightAnchor.constraint(equalToConstant: 20.0),
             phoneNumberInput.heightAnchor.constraint(equalToConstant: 45.0),
-            submitButton.heightAnchor.constraint(equalToConstant: 45.0),
+            loginButton.heightAnchor.constraint(equalToConstant: 45.0),
+            signupButton.heightAnchor.constraint(equalToConstant: 45.0),
         ])
         
         viewModel?.$error
@@ -141,12 +159,16 @@ class LoginViewController: BaseViewController {
     
     func bind() {
         
-        guard let viewModel else {
+        guard viewModel != nil else {
             return
         }
     }
 
-    @objc func submitButtonPressed(_ sender:UIButton) {
+    @objc func loginButtonPressed(_ sender:UIButton) {
         viewModel?.login(phoneNumber: phoneNumberInput.text ?? "")
+    }
+
+    @objc func signupButtonPressed(_ sender:UIButton) {
+        viewModel?.login(phoneNumber: phoneNumberInput.text ?? "", newuser: true)
     }
 }

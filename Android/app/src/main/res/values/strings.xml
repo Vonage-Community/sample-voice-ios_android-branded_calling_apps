@@ -32,4 +32,6 @@
     <string name="speaker">speaker</string>
     <string name="mute">mute</string>
     <string name="call_log">Call Log</string>
+    <string name="brands">Brands</string>
+    <string name="sign_up">Sign Up</string>
 </resources>
