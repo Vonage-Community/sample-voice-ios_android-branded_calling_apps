@@ -11,7 +11,7 @@ private var backendServer = ""
 enum Configuration {
 
     static func signupUrl() -> URL {
-        let urlString = "\(backendServer)/user"
+        let urlString = "\(backendServer)/users"
         guard let url = URL(string: urlString) else {
             fatalError("Missing Sign Up URL");
         }
